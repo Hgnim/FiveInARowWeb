@@ -1,0 +1,47 @@
+﻿td {
+    padding: 0;
+}
+img {
+    width: 32px;
+}
+
+
+.chessPanel {
+    position: relative;
+    left: calc(50% - 240px);
+    width: 480px;
+    height: 480px;
+}
+.chessTable {
+    border-collapse: collapse;
+    position: absolute;
+}
+.chess {
+    z-index: 1
+}
+
+.infoBar {
+    position: relative;
+    text-align: center;
+    top:8px;
+}
+
+.oneLineBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#localTeam_icon{
+    width: 24px;
+}
+
+
+#restartButton {
+    position: fixed;
+    bottom: 0;
+}
+.disButton {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+}

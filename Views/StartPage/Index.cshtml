@@ -1,0 +1,32 @@
+﻿@using static FiveInARowWeb.About;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/js/StartPage_Index.js" type="text/javascript"></script>
+</head>
+<body>
+    <div style="text-align:center">
+    <p>欢迎来到五子棋网页版:D</p>
+        <label for="passcode">请输入许可代码:</label>
+        <input type="password" id="passcode" />
+         <br/>
+         <label for="teamSel">选择棋子阵营: </label>
+        <select id="teamSel">
+                <option value="white">白方</option>
+                <option value="black">黑方</option>
+        </select>
+        <button onclick="StartGameClick()">开始游戏</button>
+        <p style="color:red" id="errorOutput"></p>
+    </div>
+    <div style="position:fixed;bottom:0;">
+        <div style="transform: scale(0.8)">
+        <p>@version_addV</p>
+        <p>@copyright</p>
+        <a href="@githubUrl">@githubUrl_addHead</a>
+        </div>
+    </div>
+</body>
