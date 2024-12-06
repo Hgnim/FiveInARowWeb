@@ -68,6 +68,9 @@ function UpdateChess(force=false) {
                         break;
                 }
             }
+            else if (res.winData_IsTie == true) {
+                 document.getElementById('stateText').innerText="平局";
+            }
             if (force == true) {
                 UpdateChess();
             }

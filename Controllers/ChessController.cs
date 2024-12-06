@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.Reflection;
-using System.Text.Json;
 using static FiveInARowWeb.Models.ChessModel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static FiveInARowWeb.Logger;
 
 namespace FiveInARowWeb.Controllers {
-	public class ChessController : Controller {
+	public class ChessController : BaseController {
 		public IActionResult ChessPage() {
-			if (HttpContext.Session.GetString("PlayerTeamID") != null)
+			if (HttpContext.Session.GetString("PlayerTeamID") != null) {
+                DoClientLog("获取Chess/ChessPage页面", 1);
 				return View();
-			else 
-				return Redirect(UrlPath.RootUrl);
+			}
+			else {
+                DoClientLog("获取Chess/ChessPage页面被拒绝，重定向至根页面", 3);
+                return Redirect(UrlPath.RootUrl);
+			}
 		}
 
 
@@ -33,8 +33,9 @@ namespace FiveInARowWeb.Controllers {
 		}
 		[HttpGet]
 		public IActionResult GetLocalTeam() {
-			string teamID = HttpContext.Session.GetString("PlayerTeamID")!;
-			string teamIcon="";
+            string teamID = HttpContext.Session.GetString("PlayerTeamID")!;
+            DoClientLog("获取当前队伍: " +teamID, 4);
+            string teamIcon="";
 			switch (teamID) {
 				case "white":
 					teamIcon = UrlPath.Img.CP.Cw;break;
@@ -45,7 +46,8 @@ namespace FiveInARowWeb.Controllers {
 		}
 		[HttpPost]
 		public async Task<IActionResult> GetChessUpdate([FromBody] ChessUpdatePostValueModel data) {
-			ChessUpdateValueModel sendValue = null!;
+            DoClientLog("获取棋局数据更新", 4);
+            ChessUpdateValueModel sendValue = null!;
 			await Task.Run(() => {
 				AutoResetEvent are = new(false);
 				void DoEvent() {
@@ -64,10 +66,13 @@ namespace FiveInARowWeb.Controllers {
 							DataCore.chessGame.ChessData[i,j];
 						} }
 					if (DataCore.chessGame.winData != null) {
+						sendValue.WinData_IsTie = DataCore.chessGame.winData.isTie;
 						sendValue.WinData_WinTeam=DataCore.chessGame.winData.winTeam;
 						sendValue.WinData_WinChessPos = new int[5][];
-						for (int i = 0; i < 5; i++) {
-							sendValue.WinData_WinChessPos[i] = [DataCore.chessGame.winData.winChessPos[i].x, DataCore.chessGame.winData.winChessPos[i].y];
+						if (DataCore.chessGame.winData.winChessPos != null) {
+							for (int i = 0; i < 5; i++) {
+								sendValue.WinData_WinChessPos[i] = [DataCore.chessGame.winData.winChessPos[i].x, DataCore.chessGame.winData.winChessPos[i].y];
+							}
 						}
 					}
 					/*if (sendValue.WinData != null) sendValue.HaveWinner = true;
@@ -92,7 +97,8 @@ namespace FiveInARowWeb.Controllers {
 		}
 		[HttpGet]
 		public async Task<IActionResult> RestartGame() {
-			JsonResult jr = Json(new { b = false});
+            DoClientLog("点击重启游戏按钮", 3);
+            JsonResult jr = Json(new { b = false});
 			await Task.Run(() => {
 				AutoResetEvent are = new(false);
 				void DoEvent() {

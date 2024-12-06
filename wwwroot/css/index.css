@@ -1,0 +1,17 @@
+﻿body {
+    overflow: hidden;
+}
+.mainDiv {
+    text-align: center
+}
+#errorOutput {
+    color: red
+}
+.aboutDiv {
+    width: 100%;
+    bottom: 10px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 4px;
+    position: absolute;
+}

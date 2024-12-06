@@ -13,8 +13,11 @@ img {
     height: 480px;
 }
 .chessTable {
-    border-collapse: collapse;
+    border-collapse: collapse !important;
     position: absolute;
+    border-style: hidden !important;
+    border-width: 0px !important;
+    border-color: transparent;
 }
 .chess {
     z-index: 1

@@ -6,7 +6,7 @@ using static FiveInARowWeb.DataCore;
 
 namespace FiveInARowWeb {
 	public struct About {
-        public const string version = "1.0.0.20241205_beta";
+        public const string version = "1.1.0.20241206_beta";
         public const string version_addV = $"V{version}";
         public const string copyright = "Copyright (C) 2024 Hgnim, All rights reserved.";
 		public const string githubUrl = "https://github.com/Hgnim/FiveInARowWeb";
@@ -14,8 +14,12 @@ namespace FiveInARowWeb {
     }
 	public class Program {
         public static void Main(string[] args) {
-
-
+			Console.WriteLine(
+@$"欢迎使用FiveInARowWeb服务端。
+版本: {About.version}
+{About.copyright}
+{About.githubUrl_addHead}"
+                );
 			try {
 				if (!Directory.Exists(dataDir)) Directory.CreateDirectory(dataDir);
 				if (!File.Exists(configFile)) {

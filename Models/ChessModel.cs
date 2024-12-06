@@ -16,7 +16,9 @@
 			public int[][]? WinData_WinChessPos { get=> winData_winChessPos; set=> winData_winChessPos = value; }
 			ChessGame.Team? winData_winTeam = null;
 			public ChessGame.Team? WinData_WinTeam { get => winData_winTeam; set => winData_winTeam = value; }
-			ChessGame.Team whoDoChess;
+			bool winData_isTie = false;
+			public bool WinData_IsTie { get => winData_isTie;set=> winData_isTie = value; }
+            ChessGame.Team whoDoChess;
 			public ChessGame.Team WhoDoChess { get=>whoDoChess; set=>whoDoChess=value; }
 			bool isYouDoChess;
 			public bool IsYouDoChess { get => isYouDoChess; set => isYouDoChess = value; }
