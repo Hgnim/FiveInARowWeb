@@ -8,7 +8,7 @@
         return;
     }
     $.ajax({
-        url: '/StartPage/StartGame',
+        url: theUrlRoot + '/StartPage/StartGame',
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ passCode: passc,team: tese}), 

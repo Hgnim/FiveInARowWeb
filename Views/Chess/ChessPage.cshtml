@@ -1,5 +1,6 @@
 ﻿@using static FiveInARowWeb.UrlPath.Img.CP;
 @using static FiveInARowWeb.UrlPath;
+@using static FiveInARowWeb.DataCore;
 @*inject IHttpContextAccessor HttpContextAccessor*@
 @{
 }
@@ -9,6 +10,10 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="@Js.ChessPage" type="text/javascript"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=0.7">
+
+	<script>
+		var theUrlRoot = "@config.Website.Url.UrlRoot";
+	</script>
 </head>
 <body>
 	<div class="chessPanel">

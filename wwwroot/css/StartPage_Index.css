@@ -1,5 +1,7 @@
 ﻿body {
     overflow: hidden;
+    background-color: rgb(40 40 40);
+    color:ghostwhite;
 }
 .mainDiv {
     text-align: center

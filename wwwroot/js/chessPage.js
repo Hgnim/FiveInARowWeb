@@ -1,6 +1,6 @@
 ﻿function SendChess(id) {
     $.ajax({
-        url: '/Chess/SendDoChess',
+        url: theUrlRoot+'/Chess/SendDoChess',
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ v: id }),
@@ -18,7 +18,7 @@
 function GetLocalTeam() {
     var lti = document.getElementById('localTeam_icon');
     var ltt = document.getElementById('localTeam_text');
-    $.get('/Chess/GetLocalTeam', function (response) {
+    $.get(theUrlRoot + '/Chess/GetLocalTeam', function (response) {
         switch (response.id) {
             case "white":
                 ltt.innerText = "你执白子"; break;
@@ -30,7 +30,7 @@ function GetLocalTeam() {
 }
 function UpdateChess(force=false) {
      $.ajax({
-        url: '/Chess/GetChessUpdate',
+         url: theUrlRoot+ '/Chess/GetChessUpdate',
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify({ isForce: force}),
@@ -82,7 +82,7 @@ function RestartGame() {
     if (!isRestartButtonClick) {
         isRestartButtonClick = true;
         document.getElementById("restartButton").className = "disButton";
-        $.get('/Chess/RestartGame', function (response) {
+        $.get(theUrlRoot + '/Chess/RestartGame', function (response) {
             if (response.b == true) {
                 window.location.href = response.url;
             }

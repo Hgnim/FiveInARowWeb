@@ -7,7 +7,7 @@ using Force.DeepCloner;
 
 namespace FiveInARowWeb {
 	public struct About {
-        public const string version = "1.2.0.20241206_beta";
+        public const string version = "1.2.1.20241206_beta";
         public const string version_addV = $"V{version}";
         public const string copyright = "Copyright (C) 2024 Hgnim, All rights reserved.";
 		public const string githubUrl = "https://github.com/Hgnim/FiveInARowWeb";

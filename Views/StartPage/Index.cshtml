@@ -1,5 +1,6 @@
 ﻿@using static FiveInARowWeb.About;
 @using static FiveInARowWeb.UrlPath;
+@using static FiveInARowWeb.DataCore;
 @{
 }
 <head>
@@ -8,6 +9,10 @@
     <script src="@Js.StartPage_Index" type="text/javascript"></script>
     <link rel="stylesheet" href="@Css.StartPage_Index" type="text/css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        var theUrlRoot = "@config.Website.Url.UrlRoot";
+    </script>
 </head>
 <body>
     <div class="mainDiv">

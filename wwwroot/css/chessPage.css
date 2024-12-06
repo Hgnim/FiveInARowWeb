@@ -1,8 +1,13 @@
-﻿td {
+﻿body {
+    background-color: rgb(40 40 40);
+    color: ghostwhite;
+}
+td {
     padding: 0;
 }
 img {
     width: 32px;
+    -webkit-user-drag: none;
 }
 
 
