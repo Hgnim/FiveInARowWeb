@@ -4,7 +4,7 @@ using static FiveInARowWeb.FilePath;
 namespace FiveInARowWeb {
 	internal struct DataCore {
 		internal static Config config = new();
-		internal static ChessGame chessGame = new();
+		internal static ChessGame[] chessGame=[];
 	}
 	internal struct FilePath {
 		internal const string dataDir = "fiarw_data/";
@@ -40,6 +40,18 @@ namespace FiveInARowWeb {
 				internal static string N => config.Website.Url.UrlRoot + $"{dir}cp_n.png";
 			}
 		}
+		internal struct Css {
+			private const string dir = "/css/";
+			internal static string ChessPage => config.Website.Url.UrlRoot + $"{dir}chessPage.css";
+			internal static string StartPage_Index => config.Website.Url.UrlRoot + $"{dir}StartPage_Index.css";
+
+        }
+		internal struct Js {
+			private const string dir = "/js/";
+			internal static string ChessPage => config.Website.Url.UrlRoot + $"{dir}chessPage.js";
+			internal static string StartPage_Index => config.Website.Url.UrlRoot + $"{dir}StartPage_Index.js";
+
+        }
 	}
 	
 	

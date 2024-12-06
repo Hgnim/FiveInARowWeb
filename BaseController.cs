@@ -2,6 +2,7 @@
 using System.Reflection.Emit;
 using static FiveInARowWeb.Logger;
 using static FiveInARowWeb.DataCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FiveInARowWeb {
     public class BaseController:Controller {
@@ -17,7 +18,23 @@ namespace FiveInARowWeb {
             if (config.DebugMode >= level)
                 await Task.Run(() => {
                  ForceWriteLog($"{GetClientIP()} {message}");
-            });
+                });
+        }
+
+        /// <summary>
+        /// 玩家队伍ID
+        /// white;black
+        /// </summary>
+        public string? PlayerTeamID {
+            set { HttpContext.Session.SetString("PlayerTeamID", value!); }
+            get => HttpContext.Session.GetString("PlayerTeamID");
+        }
+        /// <summary>
+        /// 玩家房间ID
+        /// </summary>
+        public int? PlayerRoomID {
+            set { HttpContext.Session.SetInt32("PlayerRoomID", (int)value!); }
+            get => HttpContext.Session.GetInt32("PlayerRoomID");
         }
     }
 }

@@ -5,7 +5,7 @@ using static FiveInARowWeb.Logger;
 namespace FiveInARowWeb.Controllers {
 	public class ChessController : BaseController {
 		public IActionResult ChessPage() {
-			if (HttpContext.Session.GetString("PlayerTeamID") != null) {
+			if (PlayerTeamID != null) {
                 DoClientLog("获取Chess/ChessPage页面", 1);
 				return View();
 			}
@@ -18,7 +18,11 @@ namespace FiveInARowWeb.Controllers {
 
 		[HttpPost]
 		public ActionResult SendDoChess([FromBody] SendDoChessValueModel data) {
-			ChessGame.ChessPos cp;
+            if (PlayerTeamID == null || PlayerRoomID == null) {
+                DoClientLog("因数据丢失而导致执行棋子被拒绝，重定向至根页面", 5);
+                return Redirect(UrlPath.RootUrl);
+            }
+            ChessGame.ChessPos cp;
 			{
 				string[] sp = data.V.Split('-');
 				cp = new() {
@@ -27,13 +31,17 @@ namespace FiveInARowWeb.Controllers {
 				};
 			}
 			return Json(new { b = 
-				DataCore.chessGame.DoChess(cp,
-				(ChessGame.Team)Enum.Parse(typeof(ChessGame.Team), HttpContext.Session.GetString("PlayerTeamID")!))
+				DataCore.chessGame[(int)PlayerRoomID].DoChess(cp,
+				(ChessGame.Team)Enum.Parse(typeof(ChessGame.Team), PlayerTeamID), (int)PlayerRoomID)
 			});
 		}
 		[HttpGet]
 		public IActionResult GetLocalTeam() {
-            string teamID = HttpContext.Session.GetString("PlayerTeamID")!;
+			if (PlayerTeamID == null || PlayerRoomID == null) {//避免信息丢失后请求而导致错误
+                DoClientLog("获取当前队伍被拒绝，重定向至根页面", 5);
+                return Redirect(UrlPath.RootUrl);
+            }
+                string teamID = PlayerTeamID;
             DoClientLog("获取当前队伍: " +teamID, 4);
             string teamIcon="";
 			switch (teamID) {
@@ -46,6 +54,10 @@ namespace FiveInARowWeb.Controllers {
 		}
 		[HttpPost]
 		public async Task<IActionResult> GetChessUpdate([FromBody] ChessUpdatePostValueModel data) {
+			if (PlayerTeamID == null || PlayerRoomID == null) {
+                DoClientLog("获取棋局数据更新被拒绝，重定向至根页面", 5);
+                return Redirect(UrlPath.RootUrl);
+            }
             DoClientLog("获取棋局数据更新", 4);
             ChessUpdateValueModel sendValue = null!;
 			await Task.Run(() => {
@@ -54,30 +66,34 @@ namespace FiveInARowWeb.Controllers {
 					sendValue = new() {
 						ChessImgUrl = [UrlPath.Img.CP.N, UrlPath.Img.CP.Cw, UrlPath.Img.CP.Cb],
 						ChessData = new ChessGame.ChessType[15][],						
-						WhoDoChess = DataCore.chessGame.WhoDoChess,
+						WhoDoChess = DataCore.chessGame[(int)PlayerRoomID].WhoDoChess,
 					};
-					if (DataCore.chessGame.LastDo != null) {
-						sendValue.LastDo = [DataCore.chessGame.LastDo.x, DataCore.chessGame.LastDo.y];
-					}
+					if (DataCore.chessGame[(int)PlayerRoomID].LastDo != null) {
+#pragma warning disable CS8602
+                        sendValue.LastDo = [DataCore.chessGame[(int)PlayerRoomID].LastDo.x, DataCore.chessGame[(int)PlayerRoomID].LastDo.y];
+#pragma warning restore CS8602
+                    }
 					for(int i = 0; i < 15; i++) {
 						sendValue.ChessData[i] = new ChessGame.ChessType[15];
 						for (int j = 0; j < 15; j++) {
 							sendValue.ChessData[i][j] =
-							DataCore.chessGame.ChessData[i,j];
+							DataCore.chessGame[(int)PlayerRoomID].ChessData[i,j];
 						} }
-					if (DataCore.chessGame.winData != null) {
-						sendValue.WinData_IsTie = DataCore.chessGame.winData.isTie;
-						sendValue.WinData_WinTeam=DataCore.chessGame.winData.winTeam;
+					if (DataCore.chessGame[(int)PlayerRoomID].winData != null) {
+#pragma warning disable CS8602
+                        sendValue.WinData_IsTie = DataCore.chessGame[(int)PlayerRoomID].winData.isTie;
+						sendValue.WinData_WinTeam=DataCore.chessGame[(int)PlayerRoomID].winData.winTeam;
 						sendValue.WinData_WinChessPos = new int[5][];
-						if (DataCore.chessGame.winData.winChessPos != null) {
+						if (DataCore.chessGame[(int)PlayerRoomID].winData.winChessPos != null) {
 							for (int i = 0; i < 5; i++) {
-								sendValue.WinData_WinChessPos[i] = [DataCore.chessGame.winData.winChessPos[i].x, DataCore.chessGame.winData.winChessPos[i].y];
+								sendValue.WinData_WinChessPos[i] = [DataCore.chessGame[(int)PlayerRoomID].winData.winChessPos[i].x, DataCore.chessGame[(int)PlayerRoomID].winData.winChessPos[i].y];
 							}
 						}
-					}
-					/*if (sendValue.WinData != null) sendValue.HaveWinner = true;
+#pragma warning restore CS8602
+                    }
+                    /*if (sendValue.WinData != null) sendValue.HaveWinner = true;
 					else sendValue.HaveWinner = false;*/
-					if ((ChessGame.Team)Enum.Parse(typeof(ChessGame.Team), HttpContext.Session.GetString("PlayerTeamID")!) == sendValue.WhoDoChess)
+                    if ((ChessGame.Team)Enum.Parse(typeof(ChessGame.Team), PlayerTeamID) == sendValue.WhoDoChess)
 						sendValue.IsYouDoChess = true;
 					else
 						sendValue.IsYouDoChess = false;
@@ -87,9 +103,9 @@ namespace FiveInARowWeb.Controllers {
 					DoEvent();
 				}
 				else {
-					DataCore.chessGame.SomeOneDoChess += DoEvent;
+					DataCore.chessGame[(int)PlayerRoomID].SomeOneDoChess += DoEvent;
 					are.WaitOne();
-					DataCore.chessGame.SomeOneDoChess -= DoEvent;
+					DataCore.chessGame[(int)PlayerRoomID].SomeOneDoChess -= DoEvent;
 				}
 			});
 
@@ -97,27 +113,31 @@ namespace FiveInARowWeb.Controllers {
 		}
 		[HttpGet]
 		public async Task<IActionResult> RestartGame() {
+            if (PlayerTeamID == null || PlayerRoomID == null) {
+                DoClientLog("点击重启游戏按钮被拒绝，重定向至根页面", 5);
+                return Redirect(UrlPath.RootUrl);
+            }
             DoClientLog("点击重启游戏按钮", 3);
             JsonResult jr = Json(new { b = false});
 			await Task.Run(() => {
 				AutoResetEvent are = new(false);
 				void DoEvent() {
-					switch (HttpContext.Session.GetString("PlayerTeamID")!) {
+					switch (PlayerTeamID) {
 						case "white":
-							HttpContext.Session.SetString("PlayerTeamID", "black");
+                        PlayerTeamID= "black";
 							break;
 						case "black":
-							HttpContext.Session.SetString("PlayerTeamID", "white");
+                        PlayerTeamID="white";
 							break;
 					}
 
 					jr = Json(new { b = true ,url= UrlPath.ChessPageUrl });
 					are.Set();
 				}
-					DataCore.chessGame.DoRestartGame += DoEvent;
-				DataCore.chessGame.SetRestartGameNum((ChessGame.Team)Enum.Parse(typeof(ChessGame.Team), HttpContext.Session.GetString("PlayerTeamID")!));
+					DataCore.chessGame[(int)PlayerRoomID].DoRestartGame += DoEvent;
+				DataCore.chessGame[(int)PlayerRoomID].SetRestartGameNum((ChessGame.Team)Enum.Parse(typeof(ChessGame.Team), PlayerTeamID), (int)PlayerRoomID);
 				are.WaitOne();
-					DataCore.chessGame.DoRestartGame -= DoEvent;				
+					DataCore.chessGame[(int)PlayerRoomID].DoRestartGame -= DoEvent;				
 			});
 			return jr;
 		}

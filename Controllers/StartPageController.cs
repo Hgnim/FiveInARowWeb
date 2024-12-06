@@ -11,8 +11,13 @@ namespace FiveInARowWeb.Controllers {
 		}
 
         public IActionResult StartGame([FromBody] StartGameValueModel data) {
-			if (DataCore.config.Setting.PassCode == data.PassCode) {
-                HttpContext.Session.SetString("PlayerTeamID",data.Team);
+            for(int i=0;i< DataCore.config.Setting.PassCode.Length;i++) {
+                if(DataCore.config.Setting.PassCode[i] == data.PassCode) {
+                    PlayerRoomID = i; break;
+                }
+            }
+			if (PlayerRoomID !=null ) {
+                PlayerTeamID = data.Team;
                 return Json(new { value = 0 ,url= UrlPath.ChessPageUrl });
             }
 			else {

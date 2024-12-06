@@ -3,10 +3,11 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static FiveInARowWeb.FilePath;
 using static FiveInARowWeb.DataCore;
+using Force.DeepCloner;
 
 namespace FiveInARowWeb {
 	public struct About {
-        public const string version = "1.1.0.20241206_beta";
+        public const string version = "1.2.0.20241206_beta";
         public const string version_addV = $"V{version}";
         public const string copyright = "Copyright (C) 2024 Hgnim, All rights reserved.";
 		public const string githubUrl = "https://github.com/Hgnim/FiveInARowWeb";
@@ -35,6 +36,10 @@ namespace FiveInARowWeb {
 					return;
 				}
 			} catch { Console.WriteLine("处理配置文件时出现错误!");return; }
+
+			DataCore.chessGame=new ChessGame[DataCore.config.Setting.PassCode.Length];
+			for (int i = 0; i < chessGame.Length; i++) 
+				chessGame[i] = new();
 
             var builder = WebApplication.CreateBuilder(args);
 			builder.Services.AddControllersWithViews();

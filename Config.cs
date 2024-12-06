@@ -21,8 +21,12 @@ namespace FiveInARowWeb {
             config = yamlD.Deserialize<Config>(File.ReadAllText(configFile));
         }
         public class SettingC {
-            private string passCode = "0000";
-            public string PassCode {
+            
+            private string[] passCode = ["0000", "1111"];
+            /// <summary>
+            /// 访问代码，可以设置多个，每个访问代码代表一个房间，设置多少个访问代码代表可支持多少个房间
+            /// </summary>
+            public string[] PassCode {
                 set => passCode = value;
                 get => passCode;
             }
@@ -34,21 +38,30 @@ namespace FiveInARowWeb {
         }
 
         public class WebsiteC {
+            
+            private bool useXFFRequestHeader = false;
             /// <summary>
             /// 是否启用 X-Forwarded-For(XFF)请求标头
             /// </summary>
-            private bool useXFFRequestHeader = false;
             public bool UseXFFRequestHeader {
                 set => useXFFRequestHeader = value;
                 get => useXFFRequestHeader;
             }
             public class UrlC {
+                
                 private bool useHttps = false;
+                /// <summary>
+                /// 使用https
+                /// </summary>
                 public bool UseHttps {
                     set => useHttps = value;
                     get => useHttps;
                 }
+               
                 private string addr = "*";
+                /// <summary>
+                /// 本地监听地址
+                /// </summary>
                 public string Addr {
                     set => addr = value;
                     get => addr;
@@ -58,6 +71,9 @@ namespace FiveInARowWeb {
                 ///在包含内容的时候，urlRoot前面必须包含斜杠，末尾不能含有斜杠
                 ///</summary>
                 private string urlRoot = "/";
+                /// <summary>
+                /// 主机地址后的URL地址
+                /// </summary>
                 public string UrlRoot {
                     set {//格式化
                         string urlRoot_;
@@ -76,6 +92,9 @@ namespace FiveInARowWeb {
                     get => urlRoot;
                 }
                 private string port = "80";
+                /// <summary>
+                /// 监听端口
+                /// </summary>
                 public string Port {
                     set => port = value;
                     get => port;
@@ -103,12 +122,12 @@ namespace FiveInARowWeb {
             get => website;
         }
 
-
+        
         private byte debugMode = 0;
         /// <summary>
         /// 调试模式，用于输出调试信息等<br/>
         /// 用等级表示，等级越高，调试输出内容就越详细<br/>
-        /// 目前分为1-4级
+        /// 目前分为1-5级
         /// </summary>
         public byte DebugMode {
             get => debugMode;

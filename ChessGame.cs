@@ -48,7 +48,7 @@ namespace FiveInARowWeb {
         /// </summary>
         internal ChessType[,] ChessData => chessData;
 
-        internal bool DoChess(ChessPos pos, Team fromTeam) {
+        internal bool DoChess(ChessPos pos, Team fromTeam, int roomID) {
             if (fromTeam == WhoDoChess &&
                 winData == null &&
                 chessData[pos.x, pos.y] == ChessType.none
@@ -56,7 +56,7 @@ namespace FiveInARowWeb {
                 switch (fromTeam) {
                     case Team.white:
                         chessData[pos.x, pos.y] = ChessType.white;
-                        WriteLog($"白方执棋({pos.x},{pos.y})", 2);
+                        WriteLog($"[room-{roomID}] 白方执棋({pos.x},{pos.y})", 2);
                         Task.Run(() => {
                             for (int i = 0; i < 15; i++) {
                                 for (int j = 0; j < 15; j++) {
@@ -70,13 +70,13 @@ namespace FiveInARowWeb {
                                 winTeam = null,
                                 isTie =true
                             };
-                            WriteLog($"游戏结束，被迫和局", 2);
+                            WriteLog($"[room-{roomID}] 游戏结束，被迫和局", 2);
                         exit:;
                         });
                         break;
                     case Team.black:
                         chessData[pos.x, pos.y] = ChessType.black;
-                        WriteLog($"黑方执棋({pos.x},{pos.y})", 2);
+                        WriteLog($"[room-{roomID}] 黑方执棋({pos.x},{pos.y})", 2);
                         break;
                 }
                 lastDo = pos.DeepClone();
@@ -134,7 +134,7 @@ namespace FiveInARowWeb {
                                             winTeam = fromTeam,
                                             winChessPos = [.. winChessPosTmp]
                                         };
-                                        WriteLog($"游戏结束，{fromTeam}胜利", 2);
+                                        WriteLog($"[room-{roomID}] 游戏结束，{fromTeam}胜利", 2);
                                         goto endFor;
                                     }
                                 }
@@ -169,7 +169,7 @@ namespace FiveInARowWeb {
         private readonly bool[] restartGame = [false, false];
 
         public bool[] RestartGame => restartGame;
-        public void SetRestartGameNum(Team team) {
+        public void SetRestartGameNum(Team team,int roomID) {
             switch (team) {
                 case Team.white:
                     restartGame[0] = true;
@@ -179,9 +179,9 @@ namespace FiveInARowWeb {
                     break;
             }
             if (RestartGame[0] == true && RestartGame[1] == true) {
-                WriteLog("游戏重启", 2);
+                WriteLog($"[room-{roomID}] 游戏重启", 2);
                 DoRestartGame?.Invoke();
-                chessGame = new ChessGame().DeepClone();
+                chessGame[roomID] = new ChessGame().DeepClone();
             }
         }
     }
