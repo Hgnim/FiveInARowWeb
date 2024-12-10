@@ -1,13 +1,18 @@
 ﻿using Force.DeepCloner;
+using static FiveInARowWeb.ChessGame;
 using static FiveInARowWeb.DataCore;
 using static FiveInARowWeb.Logger;
 
 namespace FiveInARowWeb {
     public class ChessGame {
+        public ChessGame() 
+        {
+			StartHearbeatThread();
+		}
         /// <summary>
-        /// 当有人执行棋子的时候调用该事件
+        /// 当有数据更改后需要进行数据更新时的事件
         /// </summary>
-        public event Action? SomeOneDoChess;
+        public event Action? SomethingUpdate;
         /// <summary>
         /// 执行重启游戏事件
         /// </summary>
@@ -147,7 +152,7 @@ namespace FiveInARowWeb {
                 }
 
                 WhoDoChessToggle();
-                SomeOneDoChess?.Invoke();
+                SomethingUpdate?.Invoke();
                 return true;
             }
             return false;
@@ -168,7 +173,7 @@ namespace FiveInARowWeb {
         /// </summary>
         private readonly bool[] restartGame = [false, false];
 
-        public bool[] RestartGame => restartGame;
+        internal bool[] RestartGame => restartGame;
         public void SetRestartGameNum(Team team,int roomID) {
             switch (team) {
                 case Team.white:
@@ -179,10 +184,88 @@ namespace FiveInARowWeb {
                     break;
             }
             if (RestartGame[0] == true && RestartGame[1] == true) {
+                Player[] oldPlayerData = PlayerData.DeepClone();
                 WriteLog($"[room-{roomID}] 游戏重启", 2);
                 DoRestartGame?.Invoke();
-                chessGame[roomID] = new ChessGame().DeepClone();
+                chessGame[roomID] = new ChessGame() {
+                    playerData = [oldPlayerData[1],oldPlayerData[0]],
+                }.DeepClone();
+            }else
+				SomethingUpdate?.Invoke();
+		}
+
+        /// <summary>
+        /// 玩家信息
+        /// </summary>
+        internal class Player {
+            public string userName="";
+            public Team team;
+
+			/// <summary>
+			/// 心跳检测，调用StartHearbeatThread()后启用心跳检测。当心跳再次为null时，则代表连接已死亡
+			/// </summary>
+			internal bool? linkHeartbeat = true;           
+		}
+        /*delegate void PlayerDataTeam(Team team);
+		event PlayerDataTeam StartHearbeatThread;*/
+        void StartHearbeatThread() {
+			for (int tid = 0; tid < 2; tid++) {
+                if (HearbeatThread[tid] == null || !HearbeatThread[tid].IsAlive) {
+					HearbeatThread[tid] = new(new ParameterizedThreadStart((object? teamObj)=> {
+                        Team team;
+                        if (teamObj != null)
+                            team = (Team)teamObj;
+                        else return;
+                        if (playerData[(int)team] != null) {
+                            try {
+                                SomethingUpdate?.Invoke();
+                                while (playerData[(int)team].linkHeartbeat != null) {
+                                    Thread.Sleep(6000);
+                                    if (playerData[(int)team].linkHeartbeat == true)
+                                        playerData[(int)team].linkHeartbeat = false;
+                                    else
+                                        playerData[(int)team].linkHeartbeat = null;
+                                }
+                                playerData[(int)team] = null!;
+                                SomethingUpdate?.Invoke();
+                            } 
+                            catch (ObjectDisposedException) { } 
+                            catch (NullReferenceException) { }
+                        }
+					}));HearbeatThread[tid].Start(tid);
+				}
             }
-        }
-    }
+		}
+		readonly Thread[] HearbeatThread=new Thread[2];
+        
+
+		Player[] playerData=new Player[2];
+		/// <summary>
+		/// 玩家信息。0为白方，1为黑方
+		/// </summary>
+		internal Player[] PlayerData=>playerData;
+		/// <summary>
+		/// 快速将玩家信息输入至数据堆中
+		/// </summary>
+		/// <param name="team">队伍</param>
+		/// <param name="userName">用户昵称</param>
+		internal void InputPlayerData(Team team,string userName) {
+            if (playerData[(int)team] == null|| playerData[(int)team].userName==userName) {
+				playerData[(int)team] = new() {
+					userName = userName,
+					team = team,
+					linkHeartbeat = true//开启心跳检测
+				};
+				StartHearbeatThread();
+            }
+		}
+		/// <summary>
+		/// 快速将玩家信息输入至数据堆中
+		/// </summary>
+		/// <param name="team">队伍</param>
+		/// <param name="userName">用户昵称</param>
+		internal void InputPlayerData(string team, string userName) {
+            InputPlayerData((Team)Enum.Parse(typeof(Team), team), userName);
+		}
+	}
 }

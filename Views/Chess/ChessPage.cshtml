@@ -533,6 +533,13 @@
 		</table>
 	</div>
 	<div class="infoBar">
+		<div class="infoBar_Left showTeamBox">
+			<label for="whiteTeamUserName">白方: </label>
+			<label id="whiteTeamUserName" style="color:red">离线</label>
+			<br/>
+			<label for="blackTeamUserName">黑方: </label>
+			<label id="blackTeamUserName" style="color:red">离线</label>
+		</div>
 		<div class="oneLineBox">
 		<img id="localTeam_icon" src="@N"  />
 		<label id="localTeam_text"></label>
@@ -540,6 +547,9 @@
 		<h3 id="stateText"></h3>
 	</div>
 
-	<input id="restartButton" type="button" value="重启游戏(需要双方点击)" onclick="RestartGame()" />
+	<div class="restartBox">
+		<label id="restartMessage"></label><br/>
+		<input id="restartButton" type="button" value="重启游戏(需要双方点击)" onclick="RestartGame()" />
+	</div>
 	<!--<p>HttpContextAccessor.HttpContext!.Session.GetString("PlayerTeamID")</p>-->
 </body>

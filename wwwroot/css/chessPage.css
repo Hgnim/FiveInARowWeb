@@ -31,7 +31,14 @@ img {
 .infoBar {
     position: relative;
     text-align: center;
-    top:8px;
+    top: 8px;
+}
+.infoBar_Left {
+    position: absolute;
+    left: calc(50% - 240px);
+}
+.showTeamBox {
+    /*line-height: 4px;*/
 }
 
 .oneLineBox {
@@ -43,10 +50,12 @@ img {
     width: 24px;
 }
 
-
-#restartButton {
+.restartBox {
     position: fixed;
     bottom: 0;
+}
+#restartButton {
+    
 }
 .disButton {
     pointer-events: none;

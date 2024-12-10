@@ -35,6 +35,10 @@ namespace FiveInARowWeb {
 				/// </summary>
 				internal static string Cw => config.Website.Url.UrlRoot + $"{dir}cp_cw.png";
 				/// <summary>
+				/// chess none
+				/// </summary>
+				internal static string Cn => config.Website.Url.UrlRoot + $"{dir}cp_cn.png";
+				/// <summary>
 				/// null
 				/// </summary>
 				internal static string N => config.Website.Url.UrlRoot + $"{dir}cp_n.png";

@@ -36,5 +36,12 @@ namespace FiveInARowWeb {
             set { HttpContext.Session.SetInt32("PlayerRoomID", (int)value!); }
             get => HttpContext.Session.GetInt32("PlayerRoomID");
         }
+        /// <summary>
+        /// 玩家昵称
+        /// </summary>
+        public string? PlayerUserName {
+			set { HttpContext.Session.SetString("PlayerUserName", value!); }
+			get => HttpContext.Session.GetString("PlayerUserName");
+		}
     }
 }

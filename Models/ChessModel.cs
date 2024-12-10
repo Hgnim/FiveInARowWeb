@@ -22,6 +22,13 @@
 			public ChessGame.Team WhoDoChess { get=>whoDoChess; set=>whoDoChess=value; }
 			bool isYouDoChess;
 			public bool IsYouDoChess { get => isYouDoChess; set => isYouDoChess = value; }
+			public class PlayerD {
+				public string? UserName { get; set; }
+				public ChessGame.Team? Team { get; set; }
+			}
+			PlayerD[]? playerData;
+			public PlayerD[]? PlayerData { get => playerData; set => playerData = value; }
+			public bool[]? WhoClickRestartButton { get; set; }
 		}
 		public class ChessUpdatePostValueModel {
 			public required bool IsForce {  get; set; }

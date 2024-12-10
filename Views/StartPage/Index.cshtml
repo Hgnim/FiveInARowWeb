@@ -5,7 +5,7 @@
 }
 <head>
     <title>五子棋网页版</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="@Js.StartPage_Index" type="text/javascript"></script>
     <link rel="stylesheet" href="@Css.StartPage_Index" type="text/css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +17,13 @@
 <body>
     <div class="mainDiv">
     <p>欢迎来到五子棋网页版:D</p>
-        <label for="passcode">请输入许可代码:</label>
+        <label for="userName">昵称: </label>
+        <input type="text" id="userName"/>
+        <br/>
+        <label for="passcode">许可代码: </label>
         <input type="password" id="passcode" />
          <br/>
-         <label for="teamSel">选择棋子阵营: </label>
+         <label for="teamSel">棋子阵营: </label>
         <select id="teamSel">
                 <option value="white">白方</option>
                 <option value="black">黑方</option>
